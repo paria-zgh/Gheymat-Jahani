@@ -230,30 +230,6 @@ function PriceUpdater() {
       setError(err.message);
     }
   };
-  const fillNumberAfterRadefAuto = (ws) => {
-    for (let r = 1; r <= ws.rowCount; r++) {
-      for (let c = 1; c <= ws.columnCount; c++) {
-        const cell = ws.getCell(r, c);
-        if (getCellValue(cell) === "ردیف") {
-          let tempRow = r + 1;
-          let counter = 1;
-          while (tempRow <= ws.rowCount) {
-            const nextCell = ws.getCell(tempRow, c);
-            const val = getCellValue(nextCell);
-
-            // وقتی سلول شامل "*" شد، متوقف شود
-            if (val && String(val).includes("*")) break;
-
-            // شماره‌گذاری حتی اگر سلول خالی باشد
-            nextCell.value = counter;
-            counter++;
-            tempRow++;
-          }
-        }
-      }
-    }
-  };
-
 
   const applyPrices = async () => {
   try {
@@ -343,7 +319,7 @@ function PriceUpdater() {
           ["پلی اتیلن سنگین بادی 0035", "پلی اتیلن سنگین بادی"],
           ["اکریلونیتریل بوتادین استایرن 0150", "اکریلونیتریل بوتادین استایرن(0150و50 گرید طبیعی)"],
           ["پلی استایرن معمولی 1551", "پلی استایرن معمولی(1551و3160و1540)"],
-          ["پلی استایرن انبساطی نسوز  200-F", "پلی استایرن انبساطی نسوز(100,200,300)F"],
+          ["پلی استایرن انبساطی نسوز  200-F", "پلی استایرن انبساطی نسوزF(100,200,300)"],
           ["پلی اتیلن سنگین دورانی 3840UA", "پلی اتیلن سنگین دورانی (3840UA)"],
           ["پلی اتیلن سبک فیلم 0200", "پلی اتیلن سبک فیلم (0200,2119,0075)"],
           ["استایرن منومر*", "استایرن منومر (تلفیقی)"],
@@ -353,7 +329,6 @@ function PriceUpdater() {
           ["پلی اتیلن سنگین تزریقی I‏4", "پلی اتیلن سنگین تزریقی(HI0500, 62N07UV,I4)"],
           ["پلی پروپیلن فیلم HP525J", "پلی پروپیلن فیلم"],
           ["پلی وینیل کلراید E 60", "پلی وینیل کلراید (60,6644)E "],
-          ["پلی پروپیلن شیمیایی_ZR340R", "پلی پروپیلن شیمیاییZR340R "],
         ]);
 
         for (let rowNum = diffRow + 1; rowNum < lastRow; rowNum++) {
@@ -376,17 +351,17 @@ function PriceUpdater() {
 
           rowsData.push({ values: rowValues, diffCalc });
         }
+
         rowsData.sort((a, b) => {
-          const aSign = a.diffCalc >= 0 ? -1 : 1;
-          const bSign = b.diffCalc >= 0 ? -1 : 1;
-        
+          const aSign = a.diffCalc >= 0 ? 1 : -1;
+          const bSign = b.diffCalc >= 0 ? 1 : -1;
+
           if (aSign !== bSign) return aSign - bSign;
-        
+
           const nameA = String(a.values[productCol - 1] || "").toLowerCase();
           const nameB = String(b.values[productCol - 1] || "").toLowerCase();
           return nameA.localeCompare(nameB);
         });
-        
 
         rowsData.forEach((row, i) => {
           const targetRow = dataStartRow + i;
@@ -441,7 +416,7 @@ function PriceUpdater() {
             if (cell.value !== null) cell.font = { name: "B Nazanin", bold: true, size: 14 };
           }
         }
-        fillNumberAfterRadefAuto(ws);
+
         // 🔹 رفتن به جدول بعدی
         r = lastRow + 1;
       }
