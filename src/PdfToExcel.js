@@ -454,6 +454,29 @@ function PriceUpdater() {
           }
         }
         fillNumberAfterRadefAuto(ws);
+// بعد از fillNumberAfterRadefAuto(ws)
+for (let r = 1; r <= ws.rowCount; r++) {
+  const cell = ws.getCell(r, 1); // ستون A یا ستونی که متن زیر جدول قرار دارد
+  const val = getCellValue(cell);
+
+  if (val && String(val).includes("*")) {
+    const textRow = r + 1; // ردیف بعد از * متن زیر جدول
+    if (textRow > ws.rowCount) continue;
+
+    const textCell = ws.getCell(textRow, 1); // ستون متن
+    const textVal = getCellValue(textCell);
+    if (!textVal || typeof textVal !== "string") continue;
+
+    let newText = textVal;
+    newText = newText.replace(/تاریخ 1/g, date1 || "تاریخ 1");
+    newText = newText.replace(/تاریخ 2/g, date2 || "تاریخ 2");
+
+    if (newText !== textVal) textCell.value = newText;
+  }
+}
+
+
+
         // 🔹 رفتن به جدول بعدی
         r = lastRow + 1;
       }
@@ -466,7 +489,12 @@ function PriceUpdater() {
     const a = document.createElement("a");
     const url = URL.createObjectURL(blob);
     a.href = url;
-    a.download = "output.xlsx";
+    const safeDate1 = date1 ? date1.replace(/[\/\\:*?"<>|]/g, "-") : "بدون-تاریخ";
+const safeDate2 = date2 ? date2.replace(/[\/\\:*?"<>|]/g, "-") : "بدون-تاریخ";
+
+const fileName = `قیمت جهانی ${safeDate1} و ${safeDate2}.xlsx`;
+
+a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
 
