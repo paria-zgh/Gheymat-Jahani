@@ -405,15 +405,15 @@ function PriceUpdater() {
           const diffValue = val2 - val1;
           const percentValue = val1 !== 0 ? diffValue / val1 : 0;
         
-          ws.getCell(rowNum, diffCol).value = {
-            formula: `${date2ColLetter}${rowNum}-${date1ColLetter}${rowNum}`,
-            result: diffValue,
-          };
-        
-          ws.getCell(rowNum, percentCol).value = {
-            formula: `(${diffColLetter}${rowNum}/${date1ColLetter}${rowNum})`,
-            result: percentValue,
-          };
+          ws.getCell(rowNum, diffCol).value = diffValue;
+
+          if (percentCol !== -1) {
+            ws.getCell(rowNum, percentCol).value =
+              val1 !== 0 ? percentValue : 0;
+          
+            ws.getCell(rowNum, percentCol).numFmt = "0.00%";
+          }
+          
         }
         
         // 🔹 Conditional Formatting روی ستون اختلاف و درصد تغییر شامل ردیف اول و بقیه
