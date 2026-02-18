@@ -400,10 +400,22 @@ function PriceUpdater() {
         const date2ColLetter = colNumToLetter(date2Col);
 
         for (let rowNum = diffRow + 1; rowNum < lastRow; rowNum++) {
-          ws.getCell(rowNum, diffCol).value = { formula: `${date2ColLetter}${rowNum}-${date1ColLetter}${rowNum}` };
-          ws.getCell(rowNum, percentCol).value = { formula: `(${diffColLetter}${rowNum}/${date1ColLetter}${rowNum})` };
+          const val1 = Number(ws.getCell(rowNum, date1Col).value || 0);
+          const val2 = Number(ws.getCell(rowNum, date2Col).value || 0);
+          const diffValue = val2 - val1;
+          const percentValue = val1 !== 0 ? diffValue / val1 : 0;
+        
+          ws.getCell(rowNum, diffCol).value = {
+            formula: `${date2ColLetter}${rowNum}-${date1ColLetter}${rowNum}`,
+            result: diffValue,
+          };
+        
+          ws.getCell(rowNum, percentCol).value = {
+            formula: `(${diffColLetter}${rowNum}/${date1ColLetter}${rowNum})`,
+            result: percentValue,
+          };
         }
-
+        
         // 🔹 Conditional Formatting روی ستون اختلاف و درصد تغییر شامل ردیف اول و بقیه
         const columnsToFormat = [diffCol, percentCol];
         columnsToFormat.forEach((col) => {
