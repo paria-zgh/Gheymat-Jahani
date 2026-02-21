@@ -394,10 +394,7 @@ function PriceUpdater() {
             ws.getCell(targetRow, c).value = row.values[c - 1];
         });
 
-        // 🔹 فرمول اختلاف و درصد تغییر
-        const diffColLetter = colNumToLetter(diffCol);
-        const date1ColLetter = colNumToLetter(date1Col);
-        const date2ColLetter = colNumToLetter(date2Col);
+    
 
         for (let rowNum = diffRow + 1; rowNum < lastRow; rowNum++) {
           const val1 = Number(ws.getCell(rowNum, date1Col).value || 0);
