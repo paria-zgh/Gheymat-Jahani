@@ -534,9 +534,7 @@ a.download = fileName;
         >
           ⬇ دانلود خروجی اکسل
         </button>
-        <h2>
-          قیمت جدید
-        </h2>
+        
 
         {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
       </div>
